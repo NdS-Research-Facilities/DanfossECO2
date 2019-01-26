@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys, traceback, time, datetime
 import struct
@@ -16,37 +16,6 @@ global data
 global debug
 global readOK
 
-'''
-text = "NDSKJQLDJALDSJASLHello World! 你好，中国！"
-#text= bytearray('\xAD\xD7\x7F\x7E\xF2\xEC\xBD\x64\x77\xEE\x3B\xC5\x04\x6F\x47\xD0')
-#key = "1234567890"
-
-encrypt_data = xxtea.encrypt(data, key)
-decrypt_data = xxtea.decrypt(encrypt_data, key)
-decrypt_data = xxtea.decrypt(data, key)
-print( decrypt_data
-
-Danfoss NdS
-
-<CBCharacteristic: 0x7fe9bfe36df0, UUID = 10020002-2749-0001-0000-00805F9B042F, properties = 0xA, value = <3604f15d 9f6d2cfc>, notifying = NO>
-
-<CBCharacteristic: 0x7fe5917889a0, UUID = 10020003-2749-0001-0000-00805F9B042F, properties = 0xA, value = <28f8a4e3 c56a61aa f2369787 95032bb5>, notifying = NO>
-<CBCharacteristic: 0x7fd5e1f1c780, UUID = 10020003-2749-0001-0000-00805F9B042F, properties = 0xA, value = <28f8a4e3 c56a61aa f2369787 95032bb5>, notifying = NO>
-<CBCharacteristic: 0x7f859aea9fd0, UUID = 10020003-2749-0001-0000-00805F9B042F, properties = 0xA, value = <28f8a4e3 c56a61aa f2369787 95032bb5>, notifying = NO>
-
-<CBCharacteristic: 0x7f9c50702f20, UUID = 10020005-2749-0001-0000-00805F9B042F, properties = 0xA, value = <cc1492ba c2c29312>, notifying = NO>
-<CBCharacteristic: 0x7fb9fd640600, UUID = 10020005-2749-0001-0000-00805F9B042F, properties = 0xA, value = <492045ce 5d4bc5d0>, notifying = NO>
-<CBCharacteristic: 0x7fca8ef35380, UUID = 10020005-2749-0001-0000-00805F9B042F, properties = 0xA, value = <78975518 df343a60>, notifying = NO>
-<CBCharacteristic: 0x7feceec3e0a0, UUID = 10020005-2749-0001-0000-00805F9B042F, properties = 0xA, value = <96f9d740 c7f8010d>, notifying = NO>
-
-<CBCharacteristic: 0x7fcaa7d56690, UUID = 10020006-2749-0001-0000-00805F9B042F, properties = 0xA, value = <e77c5e9d 68ff501c c17c591d 86464cce>, notifying = NO>
-
-<CBCharacteristic: 0x7ff739c28fd0, UUID = 10020008-2749-0001-0000-00805F9B042F, properties = 0xA, value = <3c3fd97b d5591661>, notifying = NO>
-<CBCharacteristic: 0x7fe1df75a8e0, UUID = 10020009-2749-0001-0000-00805F9B042F, properties = 0xA, value = <3604f15d 9f6d2cfc>, notifying = NO>
-
-<CBCharacteristic: 0x7ffc43f43510, UUID = 1002000B-2749-0001-0000-00805F9B042F, properties = 0x2, value = <add77f7e f2ecbd64 77ee3bc5 046f47d0>, notifying = NO>
-
-'''
 #deco2_service_Battery            = CBUUID.UUIDWithString_(u'Battery')
 #deco2_service_Device_Information = CBUUID.UUIDWithString_(u'Device Information')
 deco2_service_10010000           = CBUUID.UUIDWithString_(u'10010000-2749-0001-0000-00805F9B042F')
