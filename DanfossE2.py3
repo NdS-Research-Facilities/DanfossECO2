@@ -224,6 +224,7 @@ class BleClass(object):
             if debug: 
                 print( "name char read" )
                 print( str(bytes(characteristic.value()).hex()))
+                print( str(bytes(characteristic.value())))
                 print( danfossDecryptGeneric(bytes(characteristic.value()).hex(),self.key).hex())
                 print( )
                 
@@ -246,88 +247,62 @@ class BleClass(object):
                 print( str(characteristic.value()).encode("hex") )
                 print( danfossDecryptGeneric(str(characteristic.value()).encode("hex"),self.key) )
                 print( )
+            print('1002000A')
 
 
-
-        print('test')
-
-        '''
-        if self.pin is None or self.temps is None or self.key is None:
-            print()
-            if debug: print( "keep going")
-        else:
-            print()
-            if debug: 
-                sp,ct = danfossDecryptTemp(self.temps,self.key)
-                print( "SP:"+str(sp)," CT:"+str(ct)) #SetPoint and CurrentTemp returned
-                ###############self.manager.cancelPeripheralConnection_(self.peripheral)
-        
-        if error is None:
-            print( "Read EC2" )
-            if debug:
-                print( characteristic.UUID(), characteristic, error )
-                print( str(characteristic.value()).encode("hex"), str(characteristic.value()) )
-            key = "add77f7ef2ecbd6477ee3bc5046f47d0" #key nds 
-            st,ct = danfossDecryptTemp(str(characteristic.value()).encode("hex"),key)
-            print( "SetPoint: "+str(st)," CurrentTemp: "+str(ct) 
-            if self.peripheral is not None and readOK:
-                readOK=False
-                self.manager.cancelPeripheralConnection_(self.peripheral)
-        '''
-
-
-def danfossEncryptTemp(data,key):
-    print( "danfossEncryptTemp(): "+ data, key )
-    #data=text for temp e.g. '23.5'
-    keystruct=bytearray.fromhex(key)
-    u=float(data)*2.0 #1/2 degree accuracy
-    arr = struct.pack('<q',int(u)) #convert to long int
-    datastruct=arr[5:8]+arr[0:5] #swap places
-    e=xxtea.encrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32)
-    w0=struct.unpack('8b',(e[4:8]+e[0:4]))
-    w1 = struct.pack('8b',*w0[::-1])
-    return w1
-
-
-def danfossDecryptTemp(data,key):
-    print( "danfossDecryptTemp(): "+ data, key )
-    keystruct=bytearray.fromhex(key) #make a bytearray of key
-    datastruct=bytearray.fromhex((data[8:16]+data[0:8])) #get data in right endiannesss
-    datastruct=datastruct[::-1] #and reverse
-    c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
-    d=c[4:8]+c[0:4] #swap ints
-    e=d[::-1] #reverse
-    xx,yy=struct.unpack('2b',e[0:2]) #unpack into 2 ints
-    return (xx/2.0),(yy/2.0)
-
-
-def danfossDecryptTime(data,key):
-    # IN[8],K[16] >> OUT[8]
-    # format OUT = TTTTSSSS where T=offset from UTC in seconds, and S = UNIX epoch in seconds
-    if debug: print( "danfossDecryptTime(): "+data, key )
-    keystruct=bytearray.fromhex(key) #make a bytearray of key
-    datastruct=bytearray.fromhex((data[8:16]+data[0:8])) #get data in right endiannesss
-    datastruct=datastruct[::-1] #and reverse
-    c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
-    out_data=c[::-1] #reverse
-    if debug: print( '{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}'.format(*bytes(out_data).hex()) )
-    offset_to_UTC  = int(bytearray(out_data[0:4]).hex(),16)
-    time_local     = int(bytearray(out_data[4:8]).hex(),16)
-    return time_local,offset_to_UTC
-
-
-def danfossDecryptGeneric(data,key):
-    # IN[32 x hex as string],K[32 x hex as string] > OUT[16 x hex as string]
-    ###################################################################################################################
-    if debug: print( "danfossDecryptGeneric(): "+data,len(data),key,len(key) )
-    keystruct=bytearray.fromhex(key) #make a bytearray of key
-    datastruct=bytearray.fromhex(data) #get data in right endiannesss
-    #datastruct=datastruct[::-1] #and reverse
-    c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
-    #out_data=c[::-1] #reverse
-    if debug: print( '{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}'.format(*bytes(out_data).hex()) )
-    return out_data
-########################################################################################################################################
+class danfossECO2(object):
+    def danfossEncryptTemp(data,key):
+        print( "danfossEncryptTemp(): "+ data, key )
+        #data=text for temp e.g. '23.5'
+        keystruct=bytearray.fromhex(key)
+        u=float(data)*2.0 #1/2 degree accuracy
+        arr = struct.pack('<q',int(u)) #convert to long int
+        datastruct=arr[5:8]+arr[0:5] #swap places
+        e=xxtea.encrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32)
+        w0=struct.unpack('8b',(e[4:8]+e[0:4]))
+        w1 = struct.pack('8b',*w0[::-1])
+        return w1
+    
+    
+    def danfossDecryptTemp(data,key):
+        print( "danfossDecryptTemp(): "+ data, key )
+        keystruct=bytearray.fromhex(key) #make a bytearray of key
+        datastruct=bytearray.fromhex((data[8:16]+data[0:8])) #get data in right endiannesss
+        datastruct=datastruct[::-1] #and reverse
+        c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
+        d=c[4:8]+c[0:4] #swap ints
+        e=d[::-1] #reverse
+        xx,yy=struct.unpack('2b',e[0:2]) #unpack into 2 ints
+        return (xx/2.0),(yy/2.0)
+    
+    
+    def danfossDecryptTime(data,key):
+        # IN[8],K[16] >> OUT[8]
+        # format OUT = TTTTSSSS where T=offset from UTC in seconds, and S = UNIX epoch in seconds
+        if debug: print( "danfossDecryptTime(): "+data, key )
+        keystruct=bytearray.fromhex(key) #make a bytearray of key
+        datastruct=bytearray.fromhex((data[8:16]+data[0:8])) #get data in right endiannesss
+        datastruct=datastruct[::-1] #and reverse
+        c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
+        out_data=c[::-1] #reverse
+        if debug: print( '{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}'.format(*bytes(out_data).hex()) )
+        offset_to_UTC  = int(bytearray(out_data[0:4]).hex(),16)
+        time_local     = int(bytearray(out_data[4:8]).hex(),16)
+        return time_local,offset_to_UTC
+    
+    
+    def danfossDecryptGeneric(data,key):
+        # IN[32 x hex as string],K[32 x hex as string] > OUT[16 x hex as string]
+        ###################################################################################################################
+        if debug: print( "danfossDecryptGeneric(): "+data,len(data),key,len(key) )
+        keystruct=bytearray.fromhex(key) #make a bytearray of key
+        datastruct=bytearray.fromhex(data) #get data in right endiannesss
+        #datastruct=datastruct[::-1] #and reverse
+        c=xxtea.decrypt(bytes(datastruct),bytes(keystruct),padding=False,rounds=32) 
+        #out_data=c[::-1] #reverse
+        if debug: print( '{}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{} {}{}'.format(*bytes(out_data).hex()) )
+        return out_data
+    ########################################################################################################################################
 
 if "__main__" == __name__:
     try:
