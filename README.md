@@ -5,4 +5,6 @@ raw code so working now on making it into a proper class and getting more generi
 
 uses PyObjC to interface with mac corebleutooth library
 
+need to press button to retrieve key for en/decryption.
+
 all fb welcome
