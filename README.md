@@ -7,4 +7,6 @@ uses PyObjC to interface with mac corebleutooth library
 
 need to press button to retrieve key for en/decryption.
 
+plan now is to build an MQTT interface which can be queried by e.g. home-assistant
+
 all fb welcome
